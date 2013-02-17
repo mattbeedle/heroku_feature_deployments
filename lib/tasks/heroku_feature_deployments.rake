@@ -2,8 +2,8 @@ namespace :hfd do
 
   desc 'Deploy the current branch'
   task deploy: :environment do
-    HerokuFeatureDeployments::Deployer.new(ENV['PIVOTAL_TICKET_ID'], options).
-      deploy
+    HerokuFeatureDeployments::Deployer.new(options).
+      deploy(ENV['PIVOTAL_TICKET_ID'])
   end
 
   desc 'Undeploy the current branch'

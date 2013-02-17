@@ -7,7 +7,6 @@ module HerokuFeatureDeployments
       @app_name = options[:app_name] || @branch_name.parameterize.
         gsub(/_/, '-')
       @full_app_name = "#{config.namespace}-#{@app_name}"
-      @pivotal_ticket_id = pivotal_ticket_id
       @pivotal_tracker_project_id = options[:pivotal_tracker_project_id]
 
       DNSimple::Client.username = config.dnsimple_username
@@ -16,7 +15,8 @@ module HerokuFeatureDeployments
       PivotalTracker::Client.token = config.pivotal_tracker_api_key
     end
 
-    def deploy
+    def deploy(pivotal_ticket_id)
+      @pivotal_ticket_id = pivotal_ticket_id
       if app_exists?
         add_environment_variables
         push_code
