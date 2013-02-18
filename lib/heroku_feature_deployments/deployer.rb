@@ -1,7 +1,7 @@
 module HerokuFeatureDeployments
   class Deployer
 
-    def initialize(pivotal_ticket_id, options = {})
+    def initialize(options = {})
       @branch_name = options[:branch_name] || get_branch_name
       @remote_name = options[:remote_name] || @branch_name.underscore
       @app_name = options[:app_name] || @branch_name.parameterize.
@@ -45,10 +45,10 @@ module HerokuFeatureDeployments
     private
 
     def create_pull_request
-      github = Github.new oauth_token: config.github_token
-      github.pull_requests.create 'mattbeedle', config.github_repo,
-        title: @full_app_name, body: @pivotal_ticket_id, head: @branch_name,
-        base: 'master'
+      config.logger.info "Creating Pull Request"
+      run_command "git push origin #{@branch_name}"
+      PullRequestCreator.new(@full_app_name, @pivotal_ticket_id, @branch_name).
+        create
     end
 
     def open_app
