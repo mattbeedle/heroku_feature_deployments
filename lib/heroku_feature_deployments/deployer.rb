@@ -33,8 +33,6 @@ module HerokuFeatureDeployments
         add_pivotal_comment if @pivotal_ticket_id
         create_pull_request
       end
-
-      open_app
     end
 
     def undeploy
@@ -49,11 +47,6 @@ module HerokuFeatureDeployments
       run_command "git push origin #{@branch_name}"
       PullRequestCreator.new(@full_app_name, @pivotal_ticket_id, @branch_name).
         create
-    end
-
-    def open_app
-      sleep 60
-      run_command "heroku open #{@full_app_name}"
     end
 
     def add_pivotal_comment
