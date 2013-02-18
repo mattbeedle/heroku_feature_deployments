@@ -52,7 +52,9 @@ module HerokuFeatureDeployments
     def add_pivotal_comment
       project = PivotalTracker::Project.find(config.pivotal_tracker_project_id)
       project.stories.find(@pivotal_tracker_id).tap do |story|
-        story.notes.create(text: "location: http://#{@app_name}#{@domain}")
+        story.notes.create(
+          text: "location: http://#{@app_name}.#{config.domain}"
+        )
       end
     end
 
@@ -93,7 +95,7 @@ module HerokuFeatureDeployments
 
     def add_to_dnsimple
       config.logger.info "Adding records to DNSimple"
-      domain = DNSimple::Domain.find('gohiring.com')
+      domain = DNSimple::Domain.find(config.domain)
       DNSimple::Record.create(
         domain, @app_name, 'CNAME', 'proxy.herokuapp.com'
       )
@@ -104,7 +106,7 @@ module HerokuFeatureDeployments
 
     def remove_from_dnsimple
       config.logger.info "Removing records from DNSimple"
-      domain = DNSimple::Domain.find('gohiring.com')
+      domain = DNSimple::Domain.find(config.domain)
       DNSimple::Record.all(domain).each do |record|
         record.destroy if %W(#{@app_name} *.#{@app_name}).include?(record.name)
       end
