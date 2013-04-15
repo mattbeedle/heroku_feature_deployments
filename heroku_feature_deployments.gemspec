@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = HerokuFeatureDeployments::VERSION
   gem.authors       = ["Matt Beedle"]
   gem.email         = ["mattbeedle@googlemail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Gem to deploy the current git branch to a new app on heroku}
+  gem.summary       = %q{Gem to deploy the current git branch to a new app on heroku}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
