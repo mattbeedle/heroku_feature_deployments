@@ -30,9 +30,10 @@ module HerokuFeatureDeployments
         create_db
         migrate_db
         seed_db
-        add_pivotal_comment if @pivotal_ticket_id
+        # add_pivotal_comment if @pivotal_ticket_id
         create_pull_request
       end
+      run_command "open #{@full_app_name}.gohiring.com"
     end
 
     def undeploy
@@ -50,6 +51,7 @@ module HerokuFeatureDeployments
     end
 
     def add_pivotal_comment
+      PivotalTracker::Project.all
       project = PivotalTracker::Project.find(config.pivotal_tracker_project_id)
       project.stories.find(@pivotal_tracker_id).tap do |story|
         story.notes.create(
@@ -120,7 +122,7 @@ module HerokuFeatureDeployments
       config.logger.info "Creating App #{@full_app_name}"
       heroku.post_app(name: @full_app_name).tap do |response|
         run_command(
-          "git remote add #{@remote_name} #{response.body['git_url']}"
+          "git remote add #{@remote_name} #{response.body['git_url'].gsub(/\.com/, '.gohiring')}"
         )
       end
     end
