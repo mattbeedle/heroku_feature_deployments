@@ -33,7 +33,7 @@ module HerokuFeatureDeployments
         # add_pivotal_comment if @pivotal_ticket_id
         create_pull_request
       end
-      run_command "open #{@full_app_name}.gohiring.com"
+      run_command "open http://#{@full_app_name}.#{config.domain}"
     end
 
     def undeploy
@@ -121,10 +121,16 @@ module HerokuFeatureDeployments
     def create_app
       config.logger.info "Creating App #{@full_app_name}"
       heroku.post_app(name: @full_app_name).tap do |response|
-        run_command(
-          "git remote add #{@remote_name} #{response.body['git_url'].gsub(/\.com/, '.gohiring')}"
-        )
+        run_command create_app_command(response.body['git_url'])
       end
+    end
+
+    def create_app_command(git_url)
+      ['git remote add', @remote_name].tap do |command|
+        if config.heroku_accoun_name
+          command << git_url.gsub(/\.com/, config.heroku_account_name)
+        end
+      end.join(' ')
     end
 
     def delete_app
