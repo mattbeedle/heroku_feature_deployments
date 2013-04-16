@@ -39,6 +39,7 @@ module HerokuFeatureDeployments
     def undeploy
       delete_app
       remove_from_dnsimple
+      remove_git_remote
     end
 
     private
@@ -48,6 +49,8 @@ module HerokuFeatureDeployments
       run_command "git push origin #{@branch_name}"
       PullRequestCreator.new(@full_app_name, @pivotal_ticket_id, @branch_name).
         create
+    rescue Github::Error::UnprocessableEntity
+      config.logger.info 'Pull request already exists.'
     end
 
 #     def add_pivotal_comment
@@ -121,16 +124,20 @@ module HerokuFeatureDeployments
     def create_app
       config.logger.info "Creating App #{@full_app_name}"
       heroku.post_app(name: @full_app_name).tap do |response|
-        run_command create_app_command(response.body['git_url'])
+        run_command add_git_remote(response.body['git_url'])
       end
     end
 
-    def create_app_command(git_url)
+    def add_git_remote(git_url)
       ['git remote add', @remote_name].tap do |command|
         if config.heroku_account_name
-          command << git_url.gsub(/\.com/, config.heroku_account_name)
+          command << git_url.gsub(/\.com/, ".#{config.heroku_account_name}")
         end
       end.join(' ')
+    end
+
+    def remove_git_remote
+      ['git remote rm', @remote_name].join(' ')
     end
 
     def delete_app
