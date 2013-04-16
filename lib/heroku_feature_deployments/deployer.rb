@@ -127,7 +127,7 @@ module HerokuFeatureDeployments
 
     def create_app_command(git_url)
       ['git remote add', @remote_name].tap do |command|
-        if config.heroku_accoun_name
+        if config.heroku_account_name
           command << git_url.gsub(/\.com/, config.heroku_account_name)
         end
       end.join(' ')
