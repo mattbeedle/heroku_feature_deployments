@@ -25,6 +25,7 @@ module HerokuFeatureDeployments
         create_app
         add_addons
         add_to_dnsimple
+        add_custom_domain
         add_environment_variables
         push_code
         create_db
@@ -43,6 +44,12 @@ module HerokuFeatureDeployments
     end
 
     private
+
+    def add_custom_domain
+      config.logger.info 'Adding custom domain'
+      heroku.post_domain(@full_app_name, "#{@full_app_name}.gohiring.com")
+      heroku.post_domain(@full_app_name, "*.#{@full_app_name}.gohiring.com")
+    end
 
     def create_pull_request
       config.logger.info "Creating Pull Request"
