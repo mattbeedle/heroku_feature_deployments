@@ -19,10 +19,12 @@ module HerokuFeatureDeployments
       @pivotal_ticket_id = pivotal_ticket_id
       if app_exists?
         add_environment_variables
+        add_collaborators
         push_code
         migrate_db
       else
         create_app
+        add_collaborators
         add_addons
         add_to_dnsimple
         add_custom_domain
@@ -44,6 +46,12 @@ module HerokuFeatureDeployments
     end
 
     private
+
+    def add_collaborators
+      config.collaborators.each do |collaborator|
+        heroku.post_collaborator(@full_app_name, collaborator)
+      end
+    end
 
     def add_custom_domain
       config.logger.info 'Adding custom domain'
