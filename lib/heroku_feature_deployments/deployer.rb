@@ -48,6 +48,7 @@ module HerokuFeatureDeployments
     private
 
     def add_collaborators
+      config.logger.info 'Adding collaborators'
       config.collaborators.each do |collaborator|
         heroku.post_collaborator(@full_app_name, collaborator)
       end
