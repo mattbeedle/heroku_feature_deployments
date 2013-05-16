@@ -36,7 +36,12 @@ module HerokuFeatureDeployments
         # add_pivotal_comment if @pivotal_ticket_id
         create_pull_request
       end
-      run_command "open http://#{@full_app_name}.#{config.domain}"
+
+      if config.domain
+        run_command "open http://#{@app_name}.#{config.domain}"
+      else
+        run_command "open http://#{@full_app_name}.herokuapp.com"
+      end
     end
 
     def undeploy
