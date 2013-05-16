@@ -56,8 +56,8 @@ module HerokuFeatureDeployments
 
     def add_custom_domain
       config.logger.info 'Adding custom domain'
-      heroku.post_domain(@full_app_name, "#{@full_app_name}.gohiring.com")
-      heroku.post_domain(@full_app_name, "*.#{@full_app_name}.gohiring.com")
+      heroku.post_domain(@full_app_name, "#{@app_name}.gohiring.com")
+      heroku.post_domain(@full_app_name, "*.#{@app_name}.gohiring.com")
     end
 
     def create_pull_request
