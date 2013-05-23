@@ -85,8 +85,13 @@ module HerokuFeatureDeployments
 #     end
 
     def get_branch_name
-      `git branch`.split("\n").select {|s| s =~ /\*/ }.first.gsub(/\*/, '').
-        strip
+      `git rev-parse --abbrev-ref HEAD`.strip
+    end
+
+    # Pivotal Tracker ticket id from branch name in format:
+    # "48586573-pg-tags" -> "48586573"
+    def pivotal_ticket_id(branch_name = get_branch_name)
+      $1 if (branch_name =~ /^(\d+)/ rescue false)
     end
 
     def create_db
