@@ -31,7 +31,9 @@ module HerokuFeatureDeployments
         add_environment_variables
         push_code
         create_db
+        sleep 60
         migrate_db
+        sleep 60
         seed_db
         # add_pivotal_comment if @pivotal_ticket_id
         create_pull_request
