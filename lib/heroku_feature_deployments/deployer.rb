@@ -35,6 +35,7 @@ module HerokuFeatureDeployments
         migrate_db
         wait_for_process_to_finish 'rake db:migrate'
         seed_db
+        wait_for_process_to_finish 'rake db:seed'
         # add_pivotal_comment if @pivotal_ticket_id
         create_pull_request
       end
