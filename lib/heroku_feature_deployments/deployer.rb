@@ -31,9 +31,9 @@ module HerokuFeatureDeployments
         add_environment_variables
         push_code
         create_db
-        sleep 60
+        wait_for_process_to_finish 'rake db:create'
         migrate_db
-        sleep 60
+        wait_for_process_to_finish 'rake db:migrate'
         seed_db
         # add_pivotal_comment if @pivotal_ticket_id
         create_pull_request
@@ -53,6 +53,22 @@ module HerokuFeatureDeployments
     end
 
     private
+
+    def wait_for_process_to_finish(command)
+      config.logger.info "waiting for #{command} to finish"
+
+      while true
+        break unless running_process_names.
+          any? { |n| n.match(/#{Regexp.escape(command)}/i) }
+        print '.'
+        sleep 5
+      end
+      puts
+    end
+
+    def running_process_names
+      heroku.get_ps(@full_app_name).body.map { |i| i['command'] }
+    end
 
     def add_collaborators
       config.logger.info 'Adding collaborators'
