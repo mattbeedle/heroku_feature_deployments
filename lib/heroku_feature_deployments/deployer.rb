@@ -143,10 +143,10 @@ module HerokuFeatureDeployments
       config.logger.info "Adding records to DNSimple"
       domain = DNSimple::Domain.find(config.domain)
       DNSimple::Record.create(
-        domain, @app_name, 'CNAME', 'proxy.herokuapp.com'
+        domain, @app_name, 'CNAME', "#{@full_app_name}.herokuapp.com"
       )
       DNSimple::Record.create(
-        domain, "*.#{@app_name}", 'CNAME', 'proxy.herokuapp.com'
+        domain, "*.#{@app_name}", 'CNAME', "#{@full_app_name}.herokuapp.com"
       )
     end
 
