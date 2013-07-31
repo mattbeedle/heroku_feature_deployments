@@ -24,6 +24,7 @@ module HerokuFeatureDeployments
         migrate_db
       else
         create_app
+        add_features
         add_collaborators
         add_addons
         add_to_dnsimple
@@ -54,6 +55,11 @@ module HerokuFeatureDeployments
     end
 
     private
+
+    def add_features
+      config.logger.info 'Adding features'
+      heroku.post_feature('user-env-compile', @full_app_name)
+    end
 
     def wait_for_process_to_finish(command)
       config.logger.info "waiting for #{command} to finish"
