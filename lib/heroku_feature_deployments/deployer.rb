@@ -141,7 +141,7 @@ module HerokuFeatureDeployments
 
     def add_environment_variables
       config.logger.info "Adding environment variables"
-      config.env_vars.merge!('SUBDOMAIN' => @app_name)
+      config.env_vars.merge!('APP_SUBDOMAIN' => @app_name)
       heroku.put_config_vars(@full_app_name, config.env_vars)
     end
 
