@@ -170,7 +170,7 @@ module HerokuFeatureDeployments
 
     def create_app
       config.logger.info "Creating App #{@full_app_name}"
-      heroku.post_app(name: @full_app_name).tap do |response|
+      heroku.post_app(name: @full_app_name, region: config.region || 'us').tap do |response|
         run_command add_git_remote(response.body['git_url'])
       end
     end
