@@ -32,12 +32,7 @@ module HerokuFeatureDeployments
         add_environment_variables
         push_code
         create_db
-        wait_for_process_to_finish 'rake db:create'
-        migrate_db
-        wait_for_process_to_finish 'rake db:migrate'
-        seed_db
-        wait_for_process_to_finish 'rake db:seed'
-        # add_pivotal_comment if @pivotal_ticket_id
+        add_pivotal_comment if @pivotal_ticket_id
         create_pull_request
       end
 
@@ -99,15 +94,15 @@ module HerokuFeatureDeployments
       config.logger.info 'Pull request already exists.'
     end
 
-#     def add_pivotal_comment
-#       PivotalTracker::Project.all
-#       project = PivotalTracker::Project.find(config.pivotal_tracker_project_id)
-#       project.stories.find(@pivotal_tracker_id).tap do |story|
-#         story.notes.create(
-#           text: "location: http://#{@app_name}.#{config.domain}"
-#         )
-#       end
-#     end
+    def add_pivotal_comment
+      PivotalTracker::Project.all
+      project = PivotalTracker::Project.find(config.pivotal_tracker_project_id)
+      project.stories.find(@pivotal_tracker_id).tap do |story|
+       story.notes.create(
+          text: "location: http://#{@app_name}.#{config.domain}"
+      )
+      end
+    end
 
     def get_branch_name
       `git branch`.split("\n").select {|s| s =~ /\*/ }.first.gsub(/\*/, '').
@@ -115,18 +110,13 @@ module HerokuFeatureDeployments
     end
 
     def create_db
-      config.logger.info "Creating database"
-      heroku.post_ps(@full_app_name, 'rake db:create')
+      config.logger.info "Creating, migrating and seeding database"
+      heroku.post_ps(@full_app_name, 'rake db:create db:migrate db:seed')
     end
 
     def migrate_db
       config.logger.info "Migrating database"
       heroku.post_ps(@full_app_name, 'rake db:migrate')
-    end
-
-    def seed_db
-      config.logger.info "Seeding database"
-      heroku.post_ps(@full_app_name, 'rake db:seed')
     end
 
     def push_code
