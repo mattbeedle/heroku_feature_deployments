@@ -18,6 +18,12 @@ Or install it yourself as:
 
     $ gem install heroku_feature_deployments
 
+Outside of Rails you must include the rake tasks manually in your Rakefile
+
+```ruby
+load 'tasks/heroku_feature_deployments.rake'
+```
+
 ## Configuration
 
 ```ruby
