@@ -25,7 +25,7 @@ HerokuFeatureDeployments.configure do |config|
   # Heroku Configuration
   config.heroku_api_key = ENV['HEROKU_API_KEY']
   config.addons = [
-    'memcachier:dev', sendgrid:starter', 'redistogo:nano'
+    'memcachier:dev', 'sendgrid:starter', 'redistogo:nano'
   ] # List of all Heroku addons required
   config.env_vars = {
     S3_BUCKET_NAME: 'my-bucket',
