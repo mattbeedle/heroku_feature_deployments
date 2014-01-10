@@ -1,4 +1,4 @@
-# HerokuFeatureDeployments
+# Heroku Feature Deployments
 
 A very simple gem to automate deployment of the current git branch to Heroku,
 configure DNS, notify PivotalTracker, etc. For more information, [see this blog
