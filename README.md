@@ -24,34 +24,48 @@ Or install it yourself as:
 HerokuFeatureDeployments.configure do |config|
   # Heroku Configuration
   config.heroku_api_key = ENV['HEROKU_API_KEY']
+
+  # List of all Heroku addons required
   config.addons = [
     'memcachier:dev', 'sendgrid:starter', 'redistogo:nano'
-  ] # List of all Heroku addons required
+  ]
+
+  # These environment variables will be added to heroku
   config.env_vars = {
     S3_BUCKET_NAME: 'my-bucket',
     RACK_ENV: 'staging'
   }
-  config.namespace = 'a-namespace' # Prefix all heroku app names with this, to
-  avoid name collisions
-  config.heroku_account_name = 'account-name' # The name of the heroku account
-  you are using (https://github.com/ddollar/heroku-accounts)
-  config.region = 'eu' # The region to deploy the app in (eu/us)
+
+  # Prefix all heroku app names with this, to avoid name collisions
+  config.namespace = 'a-namespace'
+
+  # Ths name of the heroku account you are using you are using
+  # (https://github.com/ddollar/heroku-accounts)
+  config.heroku_account_name = 'account-name'
+
+  # The region to deploy the app in (eu/us)
+  config.region = 'eu'
+
+  # An array of collaborator email addresses
   config.collaborators = [
     'matt@gmail.com', 'another@gmail.com'
-  ] # An array of collaborator email addresses
+  ]
 
   # DNS configuration
   config.dnsimple_username = ENV['DNSIMPLE_USERNAME']
   config.dnsimple_api_key = ENV['DNSIMPLE_API_KEY']
 
+
   # GitHub Configuration
   config.github_token = ENV['GITHUB_TOKEN']
-  config.github_repo = 'github project name' # The name of the github repo
-  ('heroku_feature_deployments') for example
+  # The name of the GitHub repository ('heroku_feature_deployments') for example
+  config.github_repo = 'github project name'
+
 
   # Pivotal Tracker Configuration
   config.pivotal_tracker_api_key = ENV['PIVOTAL_TRACKER_API_KEY']
   config.pivotal_tracker_project_id = ENV['PIVOTAL_TRACKER_PROJECT_ID']
+
 
   # Other
   config.logger = Rails.logger # Defaults to STDOUT
