@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'heroku-api'
 require 'dnsimple'
-require 'github_api'
+require 'octokit'
 require 'heroku_feature_deployments/configuration'
 require 'heroku_feature_deployments/deployer'
 require 'heroku_feature_deployments/pull_request_creator'

@@ -8,14 +8,19 @@ module HerokuFeatureDeployments
     end
 
     def create
-      github = Github.new(
-        oauth_token: HerokuFeatureDeployments.configuration.github_token
-      )
-
-      github.pull_requests.create(
-        'geeland',
+      client.create_pull_request(
         HerokuFeatureDeployments.configuration.github_repo,
-        title: title, body: body, head: @branch_name, base: 'master'
+        'master', @branch_name, title, body
+      )
+    rescue Octokit::UnprocessableEntity => e
+      config.logger "An error occurred when creating the pull request: #{e.message}"
+    end
+
+    private
+
+    def client
+      @client ||= Octokit::Client.new(
+        access_token: HerokuFeatureDeployments.configuration.github_token
       )
     end
 

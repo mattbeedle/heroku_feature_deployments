@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency('heroku-api')
   gem.add_runtime_dependency('dnsimple-ruby')
-  gem.add_runtime_dependency('github_api')
+  gem.add_runtime_dependency('octokit')
 
   gem.add_development_dependency('rspec')
   gem.add_development_dependency('vcr')
