@@ -90,8 +90,6 @@ module HerokuFeatureDeployments
       run_command "git push origin #{@branch_name}"
       PullRequestCreator.new(@full_app_name, @pivotal_ticket_id, @branch_name).
         create
-    rescue Github::Error::UnprocessableEntity
-      config.logger.info 'Pull request already exists.'
     end
 
     def add_pivotal_comment
