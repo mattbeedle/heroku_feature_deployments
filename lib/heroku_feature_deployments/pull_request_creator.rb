@@ -13,10 +13,14 @@ module HerokuFeatureDeployments
         'master', @branch_name, title, body
       )
     rescue Octokit::UnprocessableEntity => e
-      config.logger "An error occurred when creating the pull request: #{e.message}"
+      config.logger.info "An error occurred when creating the pull request: #{e.message}"
     end
 
     private
+
+    def config
+      @config ||= HerokuFeatureDeployments.configuration
+    end
 
     def client
       @client ||= Octokit::Client.new(

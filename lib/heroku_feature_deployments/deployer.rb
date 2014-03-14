@@ -7,12 +7,12 @@ module HerokuFeatureDeployments
       @app_name = options[:app_name] || @branch_name.parameterize.
         gsub(/_/, '-')
       @full_app_name = "#{config.namespace}-#{@app_name}"
-      @pivotal_tracker_project_id = options[:pivotal_tracker_project_id]
 
       DNSimple::Client.username = config.dnsimple_username
       DNSimple::Client.api_token = config.dnsimple_api_key
 
-      # PivotalTracker::Client.token = config.pivotal_tracker_api_key
+      PivotalTracker::Client.token = config.pivotal_tracker_api_key
+      PivotalTracker::Client.use_ssl = true if config.pivotal_use_ssl
     end
 
     def deploy(pivotal_ticket_id)
@@ -95,10 +95,10 @@ module HerokuFeatureDeployments
     def add_pivotal_comment
       PivotalTracker::Project.all
       project = PivotalTracker::Project.find(config.pivotal_tracker_project_id)
-      project.stories.find(@pivotal_tracker_id).tap do |story|
+      project.stories.find(@pivotal_ticket_id).tap do |story|
        story.notes.create(
           text: "location: http://#{@app_name}.#{config.domain}"
-      )
+        ) if story
       end
     end
 
