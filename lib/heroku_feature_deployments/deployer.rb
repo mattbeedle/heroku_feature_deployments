@@ -127,8 +127,12 @@ module HerokuFeatureDeployments
     end
 
     def create_db
-      config.logger.info "Creating, migrating and seeding database"
-      heroku.post_ps(@full_app_name, 'rake db:create db:migrate db:seed')
+      config.logger.info "Creating and migrating the database"
+      heroku.post_ps(@full_app_name, 'rake db:create db:migrate')
+      wait_for_process_to_finish 'rake db:create db:migrate'
+      config.logger.info 'Seeding the database'
+      heroku.post_ps(@full_app_name, 'rake db:seed')
+      wait_for_process_to_finish 'rake db:seed'
     end
 
     def migrate_db
@@ -219,6 +223,18 @@ module HerokuFeatureDeployments
     def run_command(command)
       config.logger.info "Running command: #{command}"
       system command
+    end
+
+    def wait_for_process_to_finish(command)
+      config.logger.info "waiting for #{command} to finish"
+
+      while true
+        break unless running_process_names.
+          any? { |n| n.match(/#{Regexp.escape(command)}/i) }
+        print '.'
+        sleep 5
+      end
+      puts
     end
   end
 end
