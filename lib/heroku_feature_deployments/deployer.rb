@@ -22,6 +22,7 @@ module HerokuFeatureDeployments
         add_collaborators
         push_code
         migrate_db
+        add_pivotal_new_version_comment if @pivotal_ticket_id
       else
         create_app
         add_features
@@ -93,13 +94,31 @@ module HerokuFeatureDeployments
     end
 
     def add_pivotal_comment
+      if find_pivotal_story
+        find_pivotal_story.notes.create(
+          text: "Test at: http://#{@app_name}.#{config.domain}"
+        )
+        deliver_pivotal_story
+      end
+    end
+
+    def add_pivotal_new_version_comment
+      if find_pivotal_story
+        find_pivotal_story.notes.create(
+          text: "A new version has just been deployed"
+        )
+        deliver_pivotal_story
+      end
+    end
+
+    def deliver_pivotal_story
+      find_pivotal_story.update current_state: 'delivered'
+    end
+
+    def find_pivotal_story
       PivotalTracker::Project.all
       project = PivotalTracker::Project.find(config.pivotal_tracker_project_id)
-      project.stories.find(@pivotal_ticket_id).tap do |story|
-       story.notes.create(
-          text: "location: http://#{@app_name}.#{config.domain}"
-        ) if story
-      end
+      project.stories.find(@pivotal_ticket_id)
     end
 
     def get_branch_name
