@@ -54,7 +54,7 @@ module HerokuFeatureDeployments
 
     def add_features
       config.logger.info 'Adding features'
-      heroku.post_feature('user-env-compile', @full_app_name)
+      # heroku.post_feature('user-env-compile', @full_app_name)
     end
 
     def wait_for_process_to_finish(command)
