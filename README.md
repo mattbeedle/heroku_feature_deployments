@@ -2,7 +2,7 @@
 
 A very simple gem to automate deployment of the current git branch to Heroku,
 configure DNS, notify PivotalTracker, etc. For more information, [see this blog
-post](http://mattbeedle.name/posts/deploy-feature-branches-to-heroku-with-heroku-feature-deployments/)
+post](http://blog.mattbeedle.name/posts/deploy-feature-branches-to-heroku-with-heroku-feature-deployments/)
 
 ## Installation
 
