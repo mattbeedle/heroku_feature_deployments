@@ -1,6 +1,8 @@
 module HerokuFeatureDeployments
   class Deployer
 
+    attr :pivotal_ticket_id
+
     def initialize(options = {})
       @branch_name = options[:branch_name] || get_branch_name
       @remote_name = options[:remote_name] || @branch_name.underscore
@@ -15,8 +17,11 @@ module HerokuFeatureDeployments
       PivotalTracker::Client.use_ssl = true if config.pivotal_use_ssl
     end
 
-    def deploy(pivotal_ticket_id)
-      @pivotal_ticket_id = pivotal_ticket_id
+    # options
+    #   :pivotal_ticket_id - if nil, ticket id will be fetched from branch
+    #     name. 
+    def deploy(options = {})
+      @pivotal_ticket_id = options[:pivotal_ticket_id]
       if app_exists?
         add_environment_variables
         add_collaborators
@@ -122,8 +127,13 @@ module HerokuFeatureDeployments
     end
 
     def get_branch_name
-      `git branch`.split("\n").select {|s| s =~ /\*/ }.first.gsub(/\*/, '').
-        strip
+      `git rev-parse --abbrev-ref HEAD`.strip
+    end
+
+    # Default to ticket id from branch name in format:
+    # "48586573-pg-tags" -> "48586573".
+    def pivotal_ticket_id(branch_name = get_branch_name)
+      @pivotal_ticket_id ||= ((branch_name =~ /^(\d+)/ rescue false) ? $1 : nil)
     end
 
     def create_db
